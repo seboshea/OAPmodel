@@ -1,7 +1,7 @@
 # OAPmodel
 
 # Model optical array probe response from 2D binary shape at different Z (position between arms)
-# Only accounts for differaction and uses angular spectrum theory
+# Only accounts for diffraction and uses angular spectrum theory
 
 #References
 #https://amt.copernicus.org/articles/12/2513/2019/
