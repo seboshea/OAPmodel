@@ -1,6 +1,6 @@
 # OAPmodel
 
-# Simulate optical array probe response from 2D binary shape, calculate image statistics (diameter, area, greyscale ratios) at different Z (position between arms).
+# Simulate optical array probe response from 2D binary shape, calculate image statistics (diameter, area, greyscale ratios, etc) at different Z (position between arms).
 # Only accounts for diffraction and uses angular spectrum theory
 
 #References
