@@ -76,7 +76,7 @@ def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutpu
         y = np.arange(y_min, y_max+.001, pixel_size)
         X, Y = np.meshgrid(x, y)
         M=LoadCpiImageMask(SourceImage)
-        pixel_size = 1
+        #pixel_size = 1
     
     if ShapeFlag == 2 : # Use general binary image as mask
         pixel_size = PixelSizeInput #um
@@ -122,7 +122,7 @@ def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutpu
     #Z= 10000 # distance from object plane um
     for i in range(len(Zarray)):
         Z= Zarray[i]
-        I, A0, fx, fy = compute_diffraction(Z, Lambda, pixel_size, x, y, X, Y, M,0)
+        I, A0, fx, fy = compute_diffraction(Z, Lambda, pixel_size, x, y, X, Y, M)
         #average image to OAP resolution and apply greyscale thresholds
         AveragingFactor = PixelSizeOutput / pixel_size # This needs to be an integer
         xOAP, yOAP, I_binnned, I_binned_2, I_binned_1, I_binned_0= AverageFactorOAPpixels(I, x, y, AveragingFactor, PixelSizeOutput)
@@ -259,7 +259,7 @@ def AverageFactorOAPpixels(I, x, y, AveragingFactor, OAP_PixelSize) :
 
 # Compute diffraction intensity (I) at a given Z
 
-def compute_diffraction(Z, l, pixel_size, x, y, X, Y, M, filter_fmax):
+def compute_diffraction(Z, l, pixel_size, x, y, X, Y, M):
 
     # Parameters
     k = 2*np.pi/l
