@@ -122,6 +122,7 @@ def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutpu
     #Z= 10000 # distance from object plane um
     for i in range(len(Zarray)):
         Z= Zarray[i]
+        #print(Z)
         I, A0, fx, fy = compute_diffraction(Z, Lambda, pixel_size, x, y, X, Y, M)
         #average image to OAP resolution and apply greyscale thresholds
         AveragingFactor = PixelSizeOutput / pixel_size # This needs to be an integer
@@ -385,7 +386,7 @@ def ImageParticleMoreStats(BinaryImage, OAPPixelSize):
         ImageStatsDict['DmaxBG'] = 0 
         ImageStatsDict['DiameterX'] = 0
         ImageStatsDict['DiameterY'] = 0 
-        return ImageStatsDict
+    return ImageStatsDict
 
 
 #_______________________________________________________________________________________
@@ -403,3 +404,11 @@ def SelectLargestParticle(segmentation):
 #_______________________________________________________________________________________
 
 
+SavePath = '/home/seb/Documents/OAP_model/'
+Prefix = 'Column'
+ShapeFlag = 0
+SourceImage = ''
+PixelSizeInput = 1
+PixelSizeOutput = 10
+
+ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput)
