@@ -33,7 +33,9 @@ from scipy import ndimage
 
 #Prefix is for output filename
 
-def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput):
+
+
+def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput,PlotDataFlag):
 
     SaveDataFlag = 1
     
@@ -158,6 +160,13 @@ def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutpu
         MaxD_BGLevel1[i]=ImageStatsDict1['DmaxBG']
         DiameterX[i]=ImageStatsDict1['DiameterX']
         DiameterY[i]=ImageStatsDict1['DiameterY']
+        
+        D0 = DiameterLevel1_BG[0]
+        if PlotDataFlag : 
+            Figurename=SavePath+Prefix+'at'+str(Z)+'.png.'
+            Zd_true = (4 * Lambda * Z) / ((D0)**2) 
+            plot_diffraction(xOAP, yOAP, I_binned_0, I_binned_1,I_binned_2,x,y, M,I,A0, fx, fy, Z,Zd_true, 1, Figurename)
+
                        
     #greyscale ratios
     AreaFraction0=(Area0_BG-Area1_BG)/Area0_BG # Alow notation from OShea AMT 2019   
@@ -404,6 +413,51 @@ def SelectLargestParticle(segmentation):
 #_______________________________________________________________________________________
 
 
+def plot_diffraction(xOAP,yOAP, ImageLow, ImageMid, ImageHigh,x, y, imageZ0, imageDiffraction,A0, fx, fy, Z, Zd,SaveFlag, Figurename):
+    
+    
+    imageGreyscale = (ImageLow - ImageMid )*25 + (ImageMid - ImageHigh )*50 + (ImageHigh )*75
+       
+    
+    fig=plt.figure(figsize=(8,8)) 
+    plt.rcParams.update({'font.size': 12})
+#    plt.subplot(3, 1, 1)
+#    plt.title('z=0')
+#    plt1=plt.pcolormesh(x,y,imageZ0, cmap='Greys_r')
+#    plt1.set_clim(vmin=0, vmax=1)
+#    plt.ylabel('y, μm')
+#    cbar=plt.colorbar(orientation='vertical')
+#    plt.ylim([-200,200])
+#    plt.xlim([-200,200])
+#    
+#    plt.subplot(3, 1, 2)
+#    plt.title('z='+str(Z) + ' μm, Zd = '+str(np.around(Zd,2)))
+#    plt2=plt.pcolormesh(x,y,imageDiffraction, cmap='Greys_r', vmin=0, vmax = 1.5)
+#    plt.ylabel('y, μm')
+#    cbar=plt.colorbar(orientation='vertical')
+#    plt.ylim([-200,200])
+#    plt.xlim([-200,200])
+    
+    #imageDiffractionThreshold= (np.where(imageDiffraction>0.5, 1, 0))
+#    plt.subplot(3, 1, 3)
+    plt.title('z='+str(Z/1000) + ' mm, Zd = '+str(np.around(Zd,2)))
+    plt3= plt.pcolormesh(xOAP,yOAP,imageGreyscale, cmap='gist_stern_r')
+    plt3.set_clim(vmin=0, vmax=75)
+    plt.ylabel('y, μm')
+    plt.xlabel('x, μm')
+    plt.ylim([-200,200])
+    plt.xlim([-200,200])
+    
+    if SaveFlag == 1 :
+        #SavePath = 'C:/Users/Admin TEMP/Documents/Diffraction/Plots/'
+        plt.savefig(Figurename,dpi=200)
+        plt.close(fig)
+
+
+#_______________________________________________________________________________________
+
+
+
 SavePath = '/home/seb/Documents/OAP_model/'
 Prefix = 'Column'
 ShapeFlag = 0
@@ -411,4 +465,4 @@ SourceImage = ''
 PixelSizeInput = 1
 PixelSizeOutput = 10
 
-ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput)
+ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput,True)
