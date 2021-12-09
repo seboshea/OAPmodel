@@ -4,4 +4,4 @@ Simulate optical array probe response from 2D binary shape, calculate image stat
 
 References
 https://amt.copernicus.org/articles/12/2513/2019/
-#https://amt.copernicus.org/articles/14/1917/2021/amt-14-1917-2021.html
+https://amt.copernicus.org/articles/14/1917/2021/amt-14-1917-2021.html
