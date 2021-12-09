@@ -22,17 +22,23 @@ from scipy import ndimage
 
 
 #_______________________________________________________________________________________
-# calculate image particle stats (diameter, area fraction, greyscale ratios etc) for an image as a funciton of Z (positiion between probe arms)
 
-# ShapeFlag = 0 Create mask 
-# ShapeFlag = 1 Use CPI image as mask
-# ShapeFlag = 2 Use general binary image as mask   
+# Theoretical shadow images of 2D non-spherical shapes are calculated 
+# using a diffraction model based on angular spectrum theory. Particle stats 
+# (diameter, area fraction, greyscale ratios etc) are output as a function 
+# of Z (position between probe arms)
 
-#PixelSizeInput = pixel size for diffraction calculations
-#PixelSizeOutput = pixel size of oap 
+# ShapeFlag set what is used as the initial 2D shape
+# ShapeFlag = 0 Generate shape which is hard coded shape in ShapeVsZ().
+# ShapeFlag = 1 Use CPI image (.jpg) for image.
+# ShapeFlag = 2 Use general binary image 1 = background, 0 = shape. Array needs to be (2048,2048) elements.
+
+# PixelSizeInput = pixel size for diffraction calculations
+# PixelSizeOutput = pixel size of oap 
+# Only tested for PixelSizeInput = 1 and PixelSizeOutput = 10, but should
+# work as long as (PixelSizeOutput / pixel_size needs) is an integer.
 
 #Prefix is for output filename
-
 
 
 def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutput,PlotDataFlag):
@@ -121,7 +127,7 @@ def ShapeVsZ(SavePath,Prefix,ShapeFlag,SourceImage,PixelSizeInput,PixelSizeOutpu
     DiameterX=np.zeros(len(Zarray))
     DiameterY=np.zeros(len(Zarray))
     
-    #Z= 10000 # distance from object plane um
+    #Calculate diffraction for each Z in Zarray
     for i in range(len(Zarray)):
         Z= Zarray[i]
         #print(Z)
@@ -269,6 +275,8 @@ def AverageFactorOAPpixels(I, x, y, AveragingFactor, OAP_PixelSize) :
 
 # Compute diffraction intensity (I) at a given Z
 
+# from #https://amt.copernicus.org/articles/12/2513/2019/
+
 def compute_diffraction(Z, l, pixel_size, x, y, X, Y, M):
 
     # Parameters
@@ -311,8 +319,6 @@ def compute_diffraction(Z, l, pixel_size, x, y, X, Y, M):
     return I, A0, fx, fy 
 
 
-
-
 #_______________________________________________________________________________________
 
 # When using CPI image for initial particle shape
@@ -328,10 +334,8 @@ def LoadCpiImageMask(ImagePath):
     ylen=shape[1]
     
     MaskArray[1024-int(xlen/2) : 1024+int(xlen/2+0.5), 1024-int(ylen/2+0.5) :1024+int(ylen/2) ]= BinaryImage
-    
-                        
+                    
     return MaskArray
-
 
 #_______________________________________________________________________________________
 
@@ -412,34 +416,14 @@ def SelectLargestParticle(segmentation):
 
 #_______________________________________________________________________________________
 
+# Plot calculated image 
 
 def plot_diffraction(xOAP,yOAP, ImageLow, ImageMid, ImageHigh,x, y, imageZ0, imageDiffraction,A0, fx, fy, Z, Zd,SaveFlag, Figurename):
     
-    
     imageGreyscale = (ImageLow - ImageMid )*25 + (ImageMid - ImageHigh )*50 + (ImageHigh )*75
-       
-    
+      
     fig=plt.figure(figsize=(8,8)) 
     plt.rcParams.update({'font.size': 12})
-#    plt.subplot(3, 1, 1)
-#    plt.title('z=0')
-#    plt1=plt.pcolormesh(x,y,imageZ0, cmap='Greys_r')
-#    plt1.set_clim(vmin=0, vmax=1)
-#    plt.ylabel('y, μm')
-#    cbar=plt.colorbar(orientation='vertical')
-#    plt.ylim([-200,200])
-#    plt.xlim([-200,200])
-#    
-#    plt.subplot(3, 1, 2)
-#    plt.title('z='+str(Z) + ' μm, Zd = '+str(np.around(Zd,2)))
-#    plt2=plt.pcolormesh(x,y,imageDiffraction, cmap='Greys_r', vmin=0, vmax = 1.5)
-#    plt.ylabel('y, μm')
-#    cbar=plt.colorbar(orientation='vertical')
-#    plt.ylim([-200,200])
-#    plt.xlim([-200,200])
-    
-    #imageDiffractionThreshold= (np.where(imageDiffraction>0.5, 1, 0))
-#    plt.subplot(3, 1, 3)
     plt.title('z='+str(Z/1000) + ' mm, Zd = '+str(np.around(Zd,2)))
     plt3= plt.pcolormesh(xOAP,yOAP,imageGreyscale, cmap='gist_stern_r')
     plt3.set_clim(vmin=0, vmax=75)
@@ -453,10 +437,7 @@ def plot_diffraction(xOAP,yOAP, ImageLow, ImageMid, ImageHigh,x, y, imageZ0, ima
         plt.savefig(Figurename,dpi=200)
         plt.close(fig)
 
-
 #_______________________________________________________________________________________
-
-
 
 SavePath = '/home/seb/Documents/OAP_model/'
 Prefix = 'Column'
