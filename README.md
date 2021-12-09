@@ -1,6 +1,6 @@
 # OAPmodel
 
-Simulate optical array probe response from 2D binary shape, calculate image statistics (diameter, area, greyscale ratios, etc) at different Z (position between arms). Only accounts for diffraction and uses angular spectrum theory
+Theoretical shadow images of 2D non-spherical shapes are calculated using a diffraction model based on angular spectrum theory. Particle stats (diameter, area fraction, greyscale ratios etc) are output as a function  of Z (position between probe arms)
 
 References
 
